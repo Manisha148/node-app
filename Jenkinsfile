@@ -1,26 +1,43 @@
+es (87 sloc)  2.85 KB
+
 pipeline {
-    agent any
-    environment{
-        DOCKER_TAG = getDockerTag()
-        NEXUS_URL  = "172.31.34.232:8080"
-        IMAGE_URL_WITH_TAG = "${NEXUS_URL}/node-app:${DOCKER_TAG}"
-    }
-    stages{
-        stage('Build Docker Image'){
-            steps{
-                sh "docker build . -t ${IMAGE_URL_WITH_TAG}"
-            }
+  environment {
+    dockerhubb = 'https://registry.hub.docker.com'
+    dockerhubCredential = 'dockerhub'
+    dockerImage = ''
+  }
+agent any
+  stages {
+     stage('Cloning Git') {
+      steps {
+        git branch: 'main' ,  url: 'https://github.com/Manisha148/node-app.git'
         }
-  stage('Push image') {
-        
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-            app.push("${env.BUILD_NUMBER}")
+     } 
+
+ stage('Building image') {
+   steps{
+       script {
+          sh 'docker build -t demo .'
+          }
         }
-    }
-       stage('Trigger ManifestUpdate') {
+      }
+
+
+ 	stage('Push') {
+
+		steps {
+			sh 'docker push manishaverma/restapis:latest'
+			}
+		}
+      
+
+     stage('Trigger ManifestUpdate') {
+        steps {
                 echo "triggering updatemanifestjob"
                 build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
         }
-     
+     }
+
+  }
 }
-}
+
