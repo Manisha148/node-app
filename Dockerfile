@@ -1,9 +1,14 @@
-FROM demo/maven:3.3-jdk-8
-MAINTAINER Author <autor@email.com>
-RUN apt-get update && \
-    apt-get install -yq --no-install-recommends wget pwgen ca-certificates && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-ENV TOMCAT_MAJOR_VERSION 8
-ENV TOMCAT_MINOR_VERSION 8.0.11
-ENV CATALINA_HOME /tomcat
+FROM ubuntu:20.04
+
+WORKDIR /app
+ADD target/shopfront-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+COPY requirements.txt requirements.txt
+RUN apt-get update && apt-get install -y python3 python3-pip
+RUN pip install flask==2.1.*
+COPY . .
+ENV FLASK_APP=app
+EXPOSE 9090
+CMD [ "python3", "-m" , "mvn", "run", "--host=0.0.0.0 --port 9090"]
+
+
