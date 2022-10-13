@@ -2,7 +2,6 @@ FROM ubuntu:20.04
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
 RUN apt-get update && apt-get install -y maven
 COPY . .
 ENV mvn=app
