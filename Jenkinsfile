@@ -1,42 +1,34 @@
+node {
+    def app
 
-pipeline {
-  environment {
-    dockerhub = 'https://registry.hub.docker.com'
-    dockerhubCredential = 'dockerhub'
-    dockerImage = ''
-  }
-agent any
-  stages {
-     stage('Cloning Git') {
-      steps {
-        git branch: 'main' ,  url: 'https://github.com/Manisha148/node-app.git'
-        }
-     } 
-
- stage('Building image') {
-   steps{
-       script {
-          sh 'docker build -t demo .'
-          }
-        }
-      }
-
-
- 	stage('Push') {
-
-		steps {
-			sh 'docker push manishaverma/demo:latest'
-			}
-		}
+    stage('Clone repository') {
       
 
+        checkout scm
+    }
+
+    stage('Build image') {
+  
+       app = docker.build("manishaverma/deployrepo")
+    }
+
+    stage('Test image') {
+  
+
+        app.inside {
+            sh 'echo "Tests passed"'
+        }
+    }
+
+    stage('Push image') {
+        
+        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+            app.push("${env.BUILD_NUMBER}")
+        }
+    }
      stage('Trigger ManifestUpdate') {
-        steps {
                 echo "triggering updatemanifestjob"
                 build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
         }
-     }
-
-  }
+     
 }
-
