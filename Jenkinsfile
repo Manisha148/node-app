@@ -1,4 +1,3 @@
-es (87 sloc)  2.85 KB
 
 pipeline {
   environment {
