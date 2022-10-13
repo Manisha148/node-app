@@ -1,7 +1,7 @@
 
 pipeline {
   environment {
-    dockerhubb = 'https://registry.hub.docker.com'
+    dockerhub = 'https://registry.hub.docker.com'
     dockerhubCredential = 'dockerhub'
     dockerImage = ''
   }
@@ -25,7 +25,7 @@ agent any
  	stage('Push') {
 
 		steps {
-			sh 'docker push manishaverma/restapis:latest'
+			sh 'docker push manishaverma/demo:latest'
 			}
 		}
       
