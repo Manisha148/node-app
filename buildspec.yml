@@ -20,13 +20,13 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
-      - docker push $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest manisha:$IMAGE_TAG
+      - docker push manisha:latest .
      
 #       - docker push $REPOSITORY_URI:latest
 #       - docker push $REPOSITORY_URI:$IMAGE_TAG
 #       - echo Writing image definitions file...
-#       - printf '[{"name":"nodeapp","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+#       - printf '[{"name":"nodeapp","imageUri":"%s"}]' $RE:$IMAGE_TAG > imagedefinitions.json
 #       - cat imagedefinitions.json 
 artifacts:
     files: imagedefinitions.json
